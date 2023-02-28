@@ -3,6 +3,9 @@ import Ship from './Ship';
 export default function Gameboard() {
   const board = {};
 
+  const hits = [];
+  const misses = [];
+
   // Ensure ship is not placed out of bounds
   const isOutOfBounds = (coords) => {
     for (let i = 0; i < coords.length; i += 1) {
@@ -26,8 +29,10 @@ export default function Gameboard() {
       const checkCoords = board[keys[i]].coord;
       for (let j = 0; j < checkCoords.length; j += 1) {
         for (let k = 0; k < coords.length; k += 1) {
-          if (coords[k][0] === checkCoords[j][0]
-            && coords[k][1] === checkCoords[j][1]) {
+          if (
+            coords[k][0] === checkCoords[j][0]
+            && coords[k][1] === checkCoords[j][1]
+          ) {
             return true;
           }
         }
@@ -52,6 +57,7 @@ export default function Gameboard() {
   // Place a ship on the board
   const placeShip = (length, coord, direction) => {
     const shipCoords = generateCoords(length, coord, direction);
+    // Don't place if out of bounds or conflicts with existing ship
     if (!isOutOfBounds(shipCoords) && !collides(shipCoords)) {
       const key = Object.keys(board).length;
       board[key] = {};
@@ -60,5 +66,31 @@ export default function Gameboard() {
     }
   };
 
-  return { board, placeShip };
+  // Check attack coordinates to record hit or miss
+  const receiveAttack = (coords) => {
+    let gotAHit = false;
+    const keys = Object.keys(board);
+    for (let i = 0; i < keys.length; i += 1) {
+      if (gotAHit) {
+        break;
+      }
+      const current = board[keys[i]];
+      const shipCoords = current.coord;
+      for (let j = 0; j < shipCoords.length; j += 1) {
+        if (shipCoords[j][0] === coords[0] && shipCoords[j][1] === coords[1]) {
+          current.ship.hit();
+          hits.push(coords);
+          gotAHit = true;
+          break;
+        }
+      }
+    }
+    if (!gotAHit) {
+      misses.push(coords);
+    }
+  };
+
+  return {
+    hits, board, placeShip, receiveAttack, misses,
+  };
 }

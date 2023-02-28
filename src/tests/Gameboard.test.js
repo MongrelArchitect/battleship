@@ -36,3 +36,21 @@ test('Ensure attempted placement doesn\'t collide with existing ship', () => {
   expect(gameboard.board[1]).toBe(undefined);
   expect(Object.keys(gameboard.board).length).toBe(1);
 });
+
+test('Gameboard records hits', () => {
+  const gameboard = Gameboard();
+  gameboard.placeShip(3, [1, 3], 'vert');
+  gameboard.receiveAttack([1, 3]);
+  expect(gameboard.hits.length).toBe(1);
+  expect(gameboard.misses.length).toBe(0);
+  expect(gameboard.hits[0]).toStrictEqual([1, 3]);
+});
+
+test('Gameboard records misses', () => {
+  const gameboard = Gameboard();
+  gameboard.placeShip(3, [1, 3], 'vert');
+  gameboard.receiveAttack([3, 0]);
+  expect(gameboard.hits.length).toBe(0);
+  expect(gameboard.misses.length).toBe(1);
+  expect(gameboard.misses[0]).toStrictEqual([3, 0]);
+});
