@@ -54,3 +54,18 @@ test('Gameboard records misses', () => {
   expect(gameboard.misses.length).toBe(1);
   expect(gameboard.misses[0]).toStrictEqual([3, 0]);
 });
+
+test('Gameboard checks if all ships sunk', () => {
+  const gameboard = Gameboard();
+  expect(gameboard.allSunk()).toBe(false);
+  gameboard.placeShip(3, [1, 3], 'vert');
+  gameboard.receiveAttack([1, 3]);
+  gameboard.receiveAttack([1, 2]);
+  gameboard.receiveAttack([1, 1]);
+  expect(gameboard.allSunk()).toBe(true);
+  gameboard.placeShip(2, [0, 0], 'horz');
+  expect(gameboard.allSunk()).toBe(false);
+  gameboard.receiveAttack([0, 0]);
+  gameboard.receiveAttack([1, 0]);
+  expect(gameboard.allSunk()).toBe(true);
+});

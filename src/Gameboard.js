@@ -90,7 +90,27 @@ export default function Gameboard() {
     }
   };
 
+  // Check if all ships on board are sunk
+  const allSunk = () => {
+    const keys = Object.keys(board);
+    const shipCount = keys.length;
+    // No ships on board yet so don't jump the gun
+    if (!shipCount) {
+      return false;
+    }
+    let sunkCount = 0;
+    for (let i = 0; i < shipCount; i += 1) {
+      if (board[keys[i]].ship.isSunk()) {
+        sunkCount += 1;
+      }
+    }
+    if (sunkCount === shipCount) {
+      return true;
+    }
+    return false;
+  };
+
   return {
-    hits, board, placeShip, receiveAttack, misses,
+    hits, board, placeShip, receiveAttack, misses, allSunk,
   };
 }
