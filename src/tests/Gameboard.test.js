@@ -16,3 +16,10 @@ test('Place ships on gameboard', () => {
     [3, 0],
   ]);
 });
+
+test('Ensure ships are placed within bounds', () => {
+  const gameboard = Gameboard();
+  gameboard.placeShip(3, [8, 0], 'horz');
+  gameboard.placeShip(5, [1, 2], 'vert');
+  expect(gameboard.board[0]).toBe(undefined);
+});
