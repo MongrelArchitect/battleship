@@ -32,3 +32,23 @@ export function drawPlayerShips(gameboard) {
     });
   });
 }
+
+// XXX for debug purposes only
+export function drawComputerShips(gameboard) {
+  // Color the cells containing the computer's ships
+  const playerBoard = document.querySelector('#computer-board');
+  const gridCells = playerBoard.querySelectorAll('.grid-cell');
+  gridCells.forEach((cell) => {
+    const x = +cell.dataset.coords[1];
+    const y = +cell.dataset.coords[4];
+    const keys = Object.keys(gameboard.board);
+    keys.forEach((key) => {
+      const currentCoords = gameboard.board[key].coord;
+      currentCoords.forEach((coord) => {
+        if (coord[0] === x && coord[1] === y) {
+          cell.classList.add('ship');
+        }
+      });
+    });
+  });
+}
