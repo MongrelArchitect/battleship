@@ -1,3 +1,5 @@
+import Gameboard from './Gameboard';
+
 function alreadyTried(coord, board) {
   const { hits } = board;
   const { misses } = board;
@@ -30,9 +32,11 @@ function getComputerChoice(board) {
 }
 
 export default function Player() {
-  const attack = (gameboard, coords = getComputerChoice(gameboard)) => {
-    gameboard.receiveAttack(coords);
+  const gameboard = Gameboard();
+
+  const attack = (enemyBoard, coords = getComputerChoice(enemyBoard)) => {
+    enemyBoard.receiveAttack(coords);
   };
 
-  return { attack };
+  return { attack, gameboard };
 }
