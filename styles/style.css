@@ -15,10 +15,24 @@ body {
 }
 
 .grid-cell {
-  border: 1px solid black;
+  border: 1px solid #111;
   background: #eee;
+}
+
+
+.grid-cell.hit {
+  background: red;
+}
+
+.grid-cell.miss {
+  background: blue;
 }
 
 .ship {
   background: #5f5;
+}
+
+#computer-board .grid-cell:hover {
+  border: 4px solid #111;
+  cursor: pointer;
 }
