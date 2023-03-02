@@ -36,6 +36,7 @@ export default function Player() {
 
   const attack = (enemyBoard, coords = getComputerChoice(enemyBoard)) => {
     enemyBoard.receiveAttack(coords);
+    return coords;
   };
 
   return { attack, gameboard };
