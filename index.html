@@ -9,6 +9,19 @@
   </head>
   <body>
     <div class="container">
+      <div class="grayout visible">
+        <div class="setup visible">
+          <p>Place <span class="ship-name">Ship</span>:</p>
+          <button id="rotate" type="button">ROTATE</button>
+          <div class="gameboard" id="setup-board">
+          </div>
+          <button id="play" type="button" disabled="true">PLAY</button>
+        </div>
+        <div class="game-over">
+          <p>Winner: <span class="winner">Winner</span>!</p>
+          <button id="reset" type="button">RESET</button>
+        </div>
+      </div>
       <h1>BATTLESHIP</h1>
       <div class="content">
         <h2>Player:</h2>

@@ -14,6 +14,26 @@ body {
   width: 400px;
 }
 
+.game-over {
+  background: #eee;
+  display: none;
+  height: 300px;
+  width: 300px;
+}
+
+.grayout {
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  height: 100vh;
+  position: absolute;
+  width: 100vw;
+}
+
+.grayout.visible,
+.game-over.visible {
+  display: block;
+}
+
 .grid-cell {
   border: 1px solid #111;
   background: #eee;
@@ -26,6 +46,21 @@ body {
 
 .grid-cell.miss {
   background: blue;
+}
+
+.grid-cell.placing {
+  background: #ff5;
+}
+
+.setup {
+  background: #eee;
+  display: none;
+  height: 100%;
+  width: 100%;
+}
+
+.setup.visible {
+  display: block;
 }
 
 .ship {
