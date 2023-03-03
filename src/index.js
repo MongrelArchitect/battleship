@@ -2,7 +2,6 @@ import Player from './Player';
 import {
   addAttackListeners,
   drawEmptyBoards,
-  drawPlayerShips,
   setup,
 } from './dom';
 
@@ -12,8 +11,6 @@ function game() {
   drawEmptyBoards();
 
   setup(human);
-
-  drawPlayerShips(human.gameboard);
 
   const computer = Player();
   computer.gameboard.placeShip(5, [1, 3], 'horz');
