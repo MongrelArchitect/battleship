@@ -74,6 +74,7 @@ function drawAttacks(hits, coords, boardName) {
 }
 
 function gameOver(winner) {
+  // Display game over screen
   const grayout = document.querySelector('.grayout');
   const gameOverDisplay = document.querySelector('.game-over');
   gameOverDisplay.classList.add('visible');
@@ -87,6 +88,7 @@ function gameOver(winner) {
 }
 
 function clearPlacing() {
+  // Clear the setup grid once ship is placed
   const setupBoard = document.querySelector('#setup-board');
   const gridCells = setupBoard.querySelectorAll('.grid-cell');
   for (let i = 0; i < gridCells.length; i += 1) {
@@ -95,6 +97,7 @@ function clearPlacing() {
 }
 
 function startGame() {
+  // Enable gameplay to begin once all player ships are placed
   const play = document.querySelector('#play');
   play.removeAttribute('disabled');
   play.addEventListener('click', () => {
@@ -106,9 +109,11 @@ function startGame() {
 }
 
 export function setup(player) {
+  // Set up the game by placing ships
   const shipName = document.querySelector('.ship-name');
   shipName.textContent = 'Carrier';
 
+  // These will change as the player places ships or changes direction
   let direction = 'vert';
   let shipLength = 5;
 
@@ -125,13 +130,16 @@ export function setup(player) {
   const gridCells = setupBoard.querySelectorAll('.grid-cell');
 
   gridCells.forEach((cell) => {
+    // For visualizing ship placement as grids are hovered over
     cell.addEventListener('mouseover', () => {
+      // If we're done placing then there's no need to show anything
       if (Object.keys(player.gameboard.board).length < 5) {
         cell.classList.add('placing');
         const x = +cell.dataset.coords[1];
         const y = +cell.dataset.coords[4];
         for (let i = 1; i < shipLength; i += 1) {
           let nextCell;
+          // Cells to style change depending on ship orientation
           if (direction === 'vert') {
             nextCell = setupBoard.querySelector(
               `.grid-cell[data-coords="[${x}, ${y - i}]"]`,
@@ -141,6 +149,7 @@ export function setup(player) {
               `.grid-cell[data-coords="[${x + i}, ${y}]"]`,
             );
           }
+          // Don't try to style any cells that are out of bounds
           if (nextCell) {
             nextCell.classList.add('placing');
           }
@@ -148,11 +157,13 @@ export function setup(player) {
       }
     });
     cell.addEventListener('mouseout', () => {
+      // Gotta clear the styling as needed
       const x = +cell.dataset.coords[1];
       const y = +cell.dataset.coords[4];
       cell.classList.remove('placing');
       for (let i = 1; i < shipLength; i += 1) {
         let nextCell;
+        // Cells to style change depending on ship orientation
         if (direction === 'vert') {
           nextCell = setupBoard.querySelector(
             `.grid-cell[data-coords="[${x}, ${y - i}]"]`,
@@ -162,18 +173,23 @@ export function setup(player) {
             `.grid-cell[data-coords="[${x + i}, ${y}]"]`,
           );
         }
+        // Don't try to style any cells that are out of bounds
         if (nextCell) {
           nextCell.classList.remove('placing');
         }
       }
     });
+    // Player is trying to place a ship
     cell.addEventListener('click', () => {
+      // Don't place any more ships once they're all done
       if (Object.keys(player.gameboard.board).length < 5) {
         const x = +cell.dataset.coords[1];
         const y = +cell.dataset.coords[4];
 
+        // Give it a whirl
         player.gameboard.placeShip(shipLength, [x, y], direction);
 
+        // Cycle through ships as they're sucessfully placed
         switch (Object.keys(player.gameboard.board).length) {
           case 1:
             shipLength = 4;
@@ -200,6 +216,7 @@ export function setup(player) {
             drawPlayerShips(player.gameboard, true);
             break;
           default:
+            // No more ships to place, so the game can start!
             clearPlacing();
             drawPlayerShips(player.gameboard, true);
             drawPlayerShips(player.gameboard);
