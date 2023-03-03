@@ -13,11 +13,7 @@ function game() {
   setup(human);
 
   const computer = Player();
-  computer.gameboard.placeShip(5, [1, 3], 'horz');
-  computer.gameboard.placeShip(4, [3, 8], 'vert');
-  computer.gameboard.placeShip(3, [0, 0], 'horz');
-  computer.gameboard.placeShip(3, [6, 9], 'vert');
-  computer.gameboard.placeShip(2, [7, 1], 'vert');
+  computer.gameboard.setupComputer();
 
   addAttackListeners(computer, human);
 }

@@ -66,6 +66,36 @@ export default function Gameboard() {
     }
   };
 
+  const setupComputer = () => {
+    const getDirection = () => {
+      if (Math.floor(Math.random() * 2)) {
+        return 'vert';
+      }
+      return 'horz';
+    };
+
+    const getCoords = () => [
+      Math.floor(Math.random() * 10),
+      Math.floor(Math.random() * 10),
+    ];
+
+    while (Object.keys(board).length === 0) {
+      placeShip(5, getCoords(), getDirection());
+    }
+    while (Object.keys(board).length === 1) {
+      placeShip(4, getCoords(), getDirection());
+    }
+    while (Object.keys(board).length === 2) {
+      placeShip(3, getCoords(), getDirection());
+    }
+    while (Object.keys(board).length === 3) {
+      placeShip(3, getCoords(), getDirection());
+    }
+    while (Object.keys(board).length === 4) {
+      placeShip(2, getCoords(), getDirection());
+    }
+  };
+
   // Check attack coordinates to record hit or miss
   const receiveAttack = (coords) => {
     let gotAHit = false;
@@ -111,6 +141,12 @@ export default function Gameboard() {
   };
 
   return {
-    hits, board, placeShip, receiveAttack, misses, allSunk,
+    hits,
+    board,
+    placeShip,
+    receiveAttack,
+    misses,
+    allSunk,
+    setupComputer,
   };
 }

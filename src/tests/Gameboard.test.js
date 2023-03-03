@@ -69,3 +69,9 @@ test('Gameboard checks if all ships sunk', () => {
   gameboard.receiveAttack([1, 0]);
   expect(gameboard.allSunk()).toBe(true);
 });
+
+test('Place ships at random for computer player', () => {
+  const gameboard = Gameboard();
+  gameboard.setupComputer();
+  expect(Object.keys(gameboard.board).length).toBe(5);
+});
