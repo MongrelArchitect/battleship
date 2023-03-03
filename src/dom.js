@@ -14,9 +14,15 @@ export function drawEmptyBoards() {
   });
 }
 
-export function drawPlayerShips(gameboard) {
+export function drawPlayerShips(gameboard, settingUp) {
+  let boardToSelect;
+  if (settingUp) {
+    boardToSelect = '#setup-board';
+  } else {
+    boardToSelect = '#player-board';
+  }
   // Color the cells containing the player's ships
-  const playerBoard = document.querySelector('#player-board');
+  const playerBoard = document.querySelector(boardToSelect);
   const gridCells = playerBoard.querySelectorAll('.grid-cell');
   gridCells.forEach((cell) => {
     const x = +cell.dataset.coords[1];
@@ -67,6 +73,144 @@ function drawAttacks(hits, coords, boardName) {
   }
 }
 
+function gameOver(winner) {
+  const grayout = document.querySelector('.grayout');
+  const gameOverDisplay = document.querySelector('.game-over');
+  gameOverDisplay.classList.add('visible');
+  grayout.classList.add('visible');
+  const winnerName = document.querySelector('.winner');
+  winnerName.textContent = winner;
+  const reset = document.querySelector('#reset');
+  reset.addEventListener('click', () => {
+    window.location.reload();
+  });
+}
+
+function clearPlacing() {
+  const setupBoard = document.querySelector('#setup-board');
+  const gridCells = setupBoard.querySelectorAll('.grid-cell');
+  for (let i = 0; i < gridCells.length; i += 1) {
+    gridCells[i].classList.remove('placing');
+  }
+}
+
+function startGame() {
+  const play = document.querySelector('#play');
+  play.removeAttribute('disabled');
+  play.addEventListener('click', () => {
+    const grayout = document.querySelector('.grayout');
+    const setupScreen = document.querySelector('.setup');
+    setupScreen.classList.remove('visible');
+    grayout.classList.remove('visible');
+  });
+}
+
+export function setup(player) {
+  const shipName = document.querySelector('.ship-name');
+  shipName.textContent = 'Carrier';
+
+  let direction = 'vert';
+  let shipLength = 5;
+
+  const rotate = document.querySelector('#rotate');
+  rotate.addEventListener('click', () => {
+    if (direction === 'vert') {
+      direction = 'horz';
+    } else {
+      direction = 'vert';
+    }
+  });
+
+  const setupBoard = document.querySelector('#setup-board');
+  const gridCells = setupBoard.querySelectorAll('.grid-cell');
+
+  gridCells.forEach((cell) => {
+    cell.addEventListener('mouseover', () => {
+      if (Object.keys(player.gameboard.board).length < 5) {
+        cell.classList.add('placing');
+        const x = +cell.dataset.coords[1];
+        const y = +cell.dataset.coords[4];
+        for (let i = 1; i < shipLength; i += 1) {
+          let nextCell;
+          if (direction === 'vert') {
+            nextCell = setupBoard.querySelector(
+              `.grid-cell[data-coords="[${x}, ${y - i}]"]`,
+            );
+          } else {
+            nextCell = setupBoard.querySelector(
+              `.grid-cell[data-coords="[${x + i}, ${y}]"]`,
+            );
+          }
+          if (nextCell) {
+            nextCell.classList.add('placing');
+          }
+        }
+      }
+    });
+    cell.addEventListener('mouseout', () => {
+      const x = +cell.dataset.coords[1];
+      const y = +cell.dataset.coords[4];
+      cell.classList.remove('placing');
+      for (let i = 1; i < shipLength; i += 1) {
+        let nextCell;
+        if (direction === 'vert') {
+          nextCell = setupBoard.querySelector(
+            `.grid-cell[data-coords="[${x}, ${y - i}]"]`,
+          );
+        } else {
+          nextCell = setupBoard.querySelector(
+            `.grid-cell[data-coords="[${x + i}, ${y}]"]`,
+          );
+        }
+        if (nextCell) {
+          nextCell.classList.remove('placing');
+        }
+      }
+    });
+    cell.addEventListener('click', () => {
+      if (Object.keys(player.gameboard.board).length < 5) {
+        const x = +cell.dataset.coords[1];
+        const y = +cell.dataset.coords[4];
+
+        player.gameboard.placeShip(shipLength, [x, y], direction);
+
+        switch (Object.keys(player.gameboard.board).length) {
+          case 1:
+            shipLength = 4;
+            shipName.textContent = 'Battleship';
+            clearPlacing();
+            drawPlayerShips(player.gameboard, true);
+            break;
+          case 2:
+            shipLength = 3;
+            shipName.textContent = 'Cruiser';
+            clearPlacing();
+            drawPlayerShips(player.gameboard, true);
+            break;
+          case 3:
+            shipLength = 3;
+            shipName.textContent = 'Submarine';
+            clearPlacing();
+            drawPlayerShips(player.gameboard, true);
+            break;
+          case 4:
+            shipLength = 2;
+            shipName.textContent = 'Destroyer';
+            clearPlacing();
+            drawPlayerShips(player.gameboard, true);
+            break;
+          default:
+            clearPlacing();
+            drawPlayerShips(player.gameboard, true);
+            drawPlayerShips(player.gameboard);
+            startGame();
+            break;
+        }
+      }
+    });
+  });
+}
+
 export function addAttackListeners(computer, human) {
   // Adds attack event listeners for each computer board cell
   const { gameboard } = computer;
@@ -82,11 +226,17 @@ export function addAttackListeners(computer, human) {
           human.attack(gameboard, [x, y]),
           '#computer-board',
         );
+        if (gameboard.allSunk()) {
+          gameOver('You');
+        }
         drawAttacks(
           human.gameboard.hits,
           computer.attack(human.gameboard),
           '#player-board',
         );
+        if (human.gameboard.allSunk()) {
+          gameOver('Computer');
+        }
       }
     });
 

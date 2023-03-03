@@ -1,15 +1,17 @@
 import Player from './Player';
-import { drawEmptyBoards, drawPlayerShips, addAttackListeners } from './dom';
+import {
+  addAttackListeners,
+  drawEmptyBoards,
+  drawPlayerShips,
+  setup,
+} from './dom';
 
 function game() {
+  const human = Player();
+
   drawEmptyBoards();
 
-  const human = Player();
-  human.gameboard.placeShip(5, [1, 4], 'vert');
-  human.gameboard.placeShip(4, [3, 8], 'horz');
-  human.gameboard.placeShip(3, [4, 6], 'vert');
-  human.gameboard.placeShip(3, [6, 2], 'horz');
-  human.gameboard.placeShip(2, [9, 7], 'vert');
+  setup(human);
 
   drawPlayerShips(human.gameboard);
 
