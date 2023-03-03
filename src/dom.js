@@ -245,14 +245,15 @@ export function addAttackListeners(computer, human) {
         );
         if (gameboard.allSunk()) {
           gameOver('You');
-        }
-        drawAttacks(
-          human.gameboard.hits,
-          computer.attack(human.gameboard),
-          '#player-board',
-        );
-        if (human.gameboard.allSunk()) {
-          gameOver('Computer');
+        } else {
+          drawAttacks(
+            human.gameboard.hits,
+            computer.attack(human.gameboard),
+            '#player-board',
+          );
+          if (human.gameboard.allSunk()) {
+            gameOver('Computer');
+          }
         }
       }
     });
