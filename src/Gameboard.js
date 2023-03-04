@@ -5,6 +5,7 @@ export default function Gameboard() {
 
   const hits = [];
   const misses = [];
+  const potentialTargets = [];
 
   // Ensure ship is not placed out of bounds
   const isOutOfBounds = (coords) => {
@@ -96,6 +97,44 @@ export default function Gameboard() {
     }
   };
 
+  function generateTargets(coords) {
+    // First generate all possible adjacent coordinates to our hit
+    const rawAttempts = [
+      [coords[0], coords[1] + 1],
+      [coords[0] - 1, coords[1]],
+      [coords[0], coords[1] - 1],
+      [coords[0] + 1, coords[1]],
+    ];
+    // Then filter out any that are out of bounds
+    const inBounds = [];
+    for (let i = 0; i < rawAttempts.length; i += 1) {
+      // isOutOfBounds expects array of coords, so wrap each attempt up
+      if (!isOutOfBounds([rawAttempts[i]])) {
+        inBounds.push(rawAttempts[i]);
+      }
+    }
+    // Now filter out any that we've already hit
+    const noHits = inBounds.filter((attempt) => {
+      let notHit = true;
+      hits.forEach((hit) => {
+        if (hit[0] === attempt[0] && hit[1] === attempt[1]) {
+          notHit = false;
+        }
+      });
+      return notHit;
+    });
+    // Last filter out any we've already missed & we're good to go!
+    return noHits.filter((attempt) => {
+      let notMissed = true;
+      misses.forEach((miss) => {
+        if (miss[0] === attempt[0] && miss[1] === attempt[1]) {
+          notMissed = false;
+        }
+      });
+      return notMissed;
+    });
+  }
+
   // Check attack coordinates to record hit or miss
   const receiveAttack = (coords) => {
     let gotAHit = false;
@@ -110,6 +149,11 @@ export default function Gameboard() {
         if (shipCoords[j][0] === coords[0] && shipCoords[j][1] === coords[1]) {
           current.ship.hit();
           hits.push(coords);
+          // Generate array of potential targets for computer to try
+          const targets = generateTargets(coords);
+          targets.forEach((target) => {
+            potentialTargets.push(target);
+          });
           gotAHit = true;
           break;
         }
@@ -147,6 +191,7 @@ export default function Gameboard() {
     receiveAttack,
     misses,
     allSunk,
+    potentialTargets,
     setupComputer,
   };
 }

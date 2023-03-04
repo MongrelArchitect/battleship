@@ -258,6 +258,7 @@ export function addAttackListeners(computer, human) {
       }
     });
 
+    /*
     // XXX testing - Color the cells containing the computer's ships
     const keys = Object.keys(gameboard.board);
     keys.forEach((key) => {
@@ -269,5 +270,6 @@ export function addAttackListeners(computer, human) {
       });
     });
     // XXX
+    */
   });
 }

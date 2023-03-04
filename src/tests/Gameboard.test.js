@@ -75,3 +75,12 @@ test('Place ships at random for computer player', () => {
   gameboard.setupComputer();
   expect(Object.keys(gameboard.board).length).toBe(5);
 });
+
+test('Successful hits generate adjacent coordinates to try next', () => {
+  const gameboard = Gameboard();
+  gameboard.placeShip(3, [1, 3], 'vert');
+  gameboard.receiveAttack([1, 3]);
+  expect(gameboard.potentialTargets.length).toBe(4);
+  gameboard.receiveAttack([1, 2]);
+  expect(gameboard.potentialTargets.length).toBe(7);
+});
