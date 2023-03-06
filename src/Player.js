@@ -20,13 +20,21 @@ function alreadyTried(coord, board) {
 }
 
 function getComputerChoice(board) {
-  const tryCoord = [
-    Math.floor(Math.random() * 10),
-    Math.floor(Math.random() * 10),
-  ];
-  while (alreadyTried(tryCoord, board)) {
-    tryCoord[0] = Math.floor(Math.random() * 10);
-    tryCoord[1] = Math.floor(Math.random() * 10);
+  const { potentialTargets } = board;
+  let tryCoord = [];
+  // If the board has any potential targets, try those first...
+  if (potentialTargets.length) {
+    tryCoord = [...potentialTargets[0]];
+    potentialTargets.shift();
+  } else {
+    // ...otherwise just try some random coordinates
+    tryCoord = [
+      ...[Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)],
+    ];
+    while (alreadyTried(tryCoord, board)) {
+      tryCoord[0] = Math.floor(Math.random() * 10);
+      tryCoord[1] = Math.floor(Math.random() * 10);
+    }
   }
   return tryCoord;
 }
